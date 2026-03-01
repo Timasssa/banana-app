@@ -3,6 +3,8 @@ workflows:
     name: Build Android APK
     max_build_duration: 60
     instance_type: mac_mini_m1
+    environment:
+      node: latest
     scripts:
       - name: Install dependencies
         script: |
@@ -10,13 +12,22 @@ workflows:
           npm install expo@~50.0.0
       - name: Build Android
         script: |
+          # Эти переменные заменяют флаг --no-interactive
           export EXPO_NO_TELEMETRY=1
           export CI=1
-          # Удаляем старые конфиги, если они криво создались
+          
+          # Полная очистка перед генерацией
           rm -rf android
-          # Создаем чистый проект Android
-          npx expo prebuild --platform android --no-interactive
-          # Собираем APK
-          cd android && ./gradlew assembleRelease
+          
+          # Генерируем проект Android (без лишних флагов)
+          npx expo prebuild --platform android
+          
+          # Проверка и сборка
+          if [ -d "android" ]; then
+            cd android && ./gradlew assembleRelease
+          else
+            echo "Ошибка: Папка android не создана!"
+            exit 1
+          fi
     artifacts:
       - android/app/build/outputs/apk/release/*.apk
