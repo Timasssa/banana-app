@@ -10,15 +10,21 @@ workflows:
           npm install expo@~50.0.0
       - name: Build Android
         script: |
-          # Эти переменные заменяют старый флаг --no-interactive
           export EXPO_NO_TELEMETRY=1
           export CI=1
           
-          # Очистка и создание папки android
+          # Очистка
           rm -rf android
-          npx expo prebuild --platform android --skip-dependency-install
           
-          # Сама сборка APK
-          cd android && ./gradlew assembleRelease
+          # Генерируем проект БЕЗ ФЛАГОВ
+          npx expo prebuild --platform android
+          
+          # Проверка и сборка
+          if [ -d "android" ]; then
+            cd android && ./gradlew assembleRelease
+          else
+            echo "Ошибка: папка android не создана!"
+            exit 1
+          fi
     artifacts:
       - android/app/build/outputs/apk/release/*.apk
