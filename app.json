@@ -9,7 +9,8 @@
       "backgroundColor": "#ffffff" 
     },
     "android": {
-      "package": "com.timasssa.bananaapp"
+      "package": "com.timasssa.bananaapp",
+      "usesCleartextTraffic": true
     }
   }
 }
