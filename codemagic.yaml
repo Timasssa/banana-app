@@ -7,16 +7,18 @@ workflows:
       - name: Install dependencies
         script: |
           npm install
-          npm install expo@~50.0.0 # Принудительно ставим нужную версию Expo
+          npm install expo@~50.0.0
       - name: Build Android
         script: |
+          # Эти переменные заменяют старый флаг --no-interactive
           export EXPO_NO_TELEMETRY=1
           export CI=1
-          # Удаляем старые конфиги, если они криво создались
+          
+          # Очистка и создание папки android
           rm -rf android
-          # Создаем чистый проект Android
-          npx expo prebuild --platform android --no-interactive
-          # Собираем APK
+          npx expo prebuild --platform android --skip-dependency-install
+          
+          # Сама сборка APK
           cd android && ./gradlew assembleRelease
     artifacts:
       - android/app/build/outputs/apk/release/*.apk
