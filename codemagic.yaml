@@ -7,12 +7,16 @@ workflows:
       - name: Install dependencies
         script: |
           npm install
+          npm install expo@~50.0.0
       - name: Build Android
         script: |
           export EXPO_NO_TELEMETRY=1
           export CI=1
+          # ПОЛНАЯ ОЧИСТКА: Удаляем папку android, чтобы битые xml не мешали
           rm -rf android
-          yes | npx expo prebuild --platform android
+          # Генерируем проект С НУЛЯ
+          npx expo prebuild --platform android --clean
+          # Сборка APK
           cd android && ./gradlew assembleRelease
     artifacts:
       - android/app/build/outputs/apk/release/*.apk
