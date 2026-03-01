@@ -7,24 +7,12 @@ workflows:
       - name: Install dependencies
         script: |
           npm install
-          npm install expo@~50.0.0
       - name: Build Android
         script: |
           export EXPO_NO_TELEMETRY=1
           export CI=1
-          
-          # Очистка
           rm -rf android
-          
-          # Генерируем проект БЕЗ ФЛАГОВ
-          npx expo prebuild --platform android
-          
-          # Проверка и сборка
-          if [ -d "android" ]; then
-            cd android && ./gradlew assembleRelease
-          else
-            echo "Ошибка: папка android не создана!"
-            exit 1
-          fi
+          yes | npx expo prebuild --platform android
+          cd android && ./gradlew assembleRelease
     artifacts:
       - android/app/build/outputs/apk/release/*.apk
