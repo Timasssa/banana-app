@@ -7,10 +7,10 @@ workflows:
       - name: Install dependencies
         script: |
           npm install
-          npm install expo@~50.0.0 # Принудительно ставим нужную версию Expo
+          npm install expo@~50.0.0
       - name: Build Android
         script: | 
-          npx expo prebuild --platform android
+          npx expo prebuild --platform android --no-interactive
           cd android && ./gradlew assembleRelease
     artifacts:
       - android/app/build/outputs/apk/release/*.apk
