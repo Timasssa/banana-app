@@ -1,0 +1,15 @@
+workflows:
+  android-apk:
+    name: Build Android APK
+    instance_type: mac_mini_m1
+    environment:
+      node: latest
+    scripts:
+      - name: Install dependencies
+        script: npm install
+      - name: Prebuild
+        script: npx expo prebuild --platform android
+      - name: Build APK
+        script: cd android && ./gradlew assembleRelease
+    artifacts:
+      - android/app/build/outputs/apk/release/*.apk
