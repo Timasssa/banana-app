@@ -3,8 +3,6 @@ workflows:
     name: Build Android APK
     max_build_duration: 60
     instance_type: mac_mini_m1
-    environment:
-      node: latest
     scripts:
       - name: Install dependencies
         script: |
@@ -14,7 +12,11 @@ workflows:
         script: |
           export EXPO_NO_TELEMETRY=1
           export CI=1
-          npx expo prebuild --platform android
+          # Удаляем старые конфиги, если они криво создались
+          rm -rf android
+          # Создаем чистый проект Android
+          npx expo prebuild --platform android --no-interactive
+          # Собираем APK
           cd android && ./gradlew assembleRelease
     artifacts:
       - android/app/build/outputs/apk/release/*.apk
